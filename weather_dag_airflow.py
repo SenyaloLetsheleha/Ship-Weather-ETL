@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 
 
 
-IMO = "601140800"
+IMO = "XXXX"  #Replace with the ship MMSI number
 
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -80,13 +80,13 @@ def transform_load_data(task_instance):
                         }
     transformed_data_list = [transformed_data]
     df_data = pd.DataFrame(transformed_data_list)
-    #aws_credentials = {"key": "xxxxxxxxx", "secret": "xxxxxxxxxx", "token": "xxxxxxxxxxxxxx"}
+   
 
     now = datetime.now()
     dt_string = now.strftime("%d%m%Y%H%M%S")
     dt_string = IMO + dt_string
     df_data.to_csv(f"{dt_string}.csv", index=False)
-    df_data.to_csv(f"s3://mmsi-weather-etl-1/{dt_string}.csv", index=False) 
+    df_data.to_csv(f"s3://XXXX/{dt_string}.csv", index=False) #XXXX replace with bucket name
 
 
 ##Default arguments for airflow to start###
@@ -94,7 +94,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2023, 1, 8),
-    'email': ['letshelehasenyalo@gmail.com'],
+    'email': [''],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 2,
@@ -112,14 +112,14 @@ with DAG('weather_dag',
         is_weather_api_ready = HttpSensor(
         task_id ='is_weather_api_ready',
         http_conn_id='weathermap_api',
-        endpoint='/data/2.5/weather?q={city}&APPID=754e3c8861b348238187637d34c8bdf2&units=metric'
+        endpoint='/data/2.5/weather?q={city}&APPID=XXXX&units=metric' #XXXX replace with the api key from openweather
         )
 
 ###Extract weather data ###
         extract_weather_data = HttpOperator(
         task_id = 'extract_weather_data',
         http_conn_id = 'weathermap_api',
-        endpoint='/data/2.5/weather?q={city}&APPID=754e3c8861b348238187637d34c8bdf2&units=metric',
+        endpoint='/data/2.5/weather?q={city}&APPID=XXXX&units=metric', #XXXX replace with the api key from openweather
         method = 'GET',
         response_filter= lambda r: json.loads(r.text),
         log_response=True
