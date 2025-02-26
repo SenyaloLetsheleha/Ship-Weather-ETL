@@ -1,7 +1,7 @@
 # Ship-Weather-ETL
-ETL script using Apache Airflow and Python for extracting weather data for a specific ship 
+ETL script using Python and Apache Airflow for extracting weather data for a specific ship and loading to an S3 bucket.  
 
-This script uses Apache Airflow and Python to extract weather data from the OpenWeather Api. It initially returns the current location of a ship (based on the ship number) by using webscraping on the vessel finder app.
+This script uses Python and Apache Airflow (Orchestration) to extract, transform and load weather data for a specific ship to an S3 bucket. It initially returns the current location of a ship (based on the ship number) by using webscraping on the vessel finder app. Based on the previously returned location of the ship, it then queries the OpenWeather Api for the current weather forecast. 
 
 Libraries used:
 
